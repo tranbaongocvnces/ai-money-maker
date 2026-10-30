@@ -626,7 +626,7 @@
                         <h4>AI Chatbot Pro</h4>
                         <p style="color: var(--muted);">Chatbot AI thông minh cho website</p>
                         <div class="market-price">500.000đ</div>
-                        <button class="btn-buy">Mua ngay</button>
+                        <button class="btn-buy" onclick="buyNow(this)">Mua ngay</button>
                     </div>
                 </div>
 
@@ -636,7 +636,7 @@
                         <h4>AI Design Tool</h4>
                         <p style="color: var(--muted);">Công cụ thiết kế bởi AI</p>
                         <div class="market-price">300.000đ</div>
-                        <button class="btn-buy">Mua ngay</button>
+                        <button class="btn-buy" onclick="buyNow(this)">Mua ngay</button>
                     </div>
                 </div>
 
@@ -646,7 +646,7 @@
                         <h4>AI Content Writer</h4>
                         <p style="color: var(--muted);">Viết content tự động</p>
                         <div class="market-price">200.000đ</div>
-                        <button class="btn-buy">Mua ngay</button>
+                        <button class="btn-buy" onclick="buyNow(this)">Mua ngay</button>
                     </div>
                 </div>
 
@@ -656,10 +656,37 @@
                         <h4>AI Analytics</h4>
                         <p style="color: var(--muted);">Phân tích dữ liệu thông minh</p>
                         <div class="market-price">400.000đ</div>
-                        <button class="btn-buy">Mua ngay</button>
+                        <button class="btn-buy" onclick="buyNow(this)">Mua ngay</button>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:#1a1a2e; border:2px solid #d4af37; border-radius:16px; padding:30px; max-width:500px; width:90%; position:relative;">
+            <button onclick="closePaymentModal()" style="position:absolute; top:15px; right:15px; background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">&times;</button>
+            <h3 style="color:#d4af37; margin-bottom:20px;">💳 Thanh Toán MoMo</h3>
+            <div style="margin-bottom:20px; padding:15px; background:rgba(212,175,55,0.1); border-radius:8px;">
+                <p style="color:#fff; margin-bottom:5px;">Sản phẩm: <strong id="itemName">-</strong></p>
+                <p style="color:#d4af37; font-size:20px; font-weight:800;" id="itemPrice">-</p>
+            </div>
+            <div class="form-group">
+                <label>Họ và tên</label>
+                <input type="text" class="form-input" placeholder="Nguyễn Văn A" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-input" id="customerEmail" placeholder="email@example.com" required>
+            </div>
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="tel" class="form-input" placeholder="0901234567" required>
+            </div>
+            <button onclick="payWithMoMo()" style="width:100%; padding:15px; background:linear-gradient(135deg, #d4af37, #f0d060); color:#1a1a2e; border:none; border-radius:8px; font-size:18px; font-weight:700; cursor:pointer;">💳 Thanh Toán Với MoMo</button>
+            <p style="text-align:center; color:rgba(255,255,255,0.5); font-size:12px; margin-top:15px;">🔒 Thanh toán an toàn qua MoMo | Hỗ trợ 24/7</p>
         </div>
     </div>
 
@@ -712,6 +739,45 @@
                 const response = responses[Math.floor(Math.random() * responses.length)];
                 addMessage(response, 'ai');
             }, 1000);
+        }
+
+        // MoMo Payment
+        function buyNow(btn) {
+            const item = btn.closest('.market-item');
+            const title = item.querySelector('h4').textContent;
+            const priceText = item.querySelector('.market-price').textContent;
+            
+            document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('itemName').textContent = title;
+            document.getElementById('itemPrice').textContent = priceText;
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function payWithMoMo() {
+            const email = document.getElementById('customerEmail').value;
+            if (!email) {
+                alert('Vui lòng điền email!');
+                return;
+            }
+
+            const partnerCode = 'MOMO';
+            const orderId = partnerCode + new Date().getTime();
+            const amount = document.getElementById('itemPrice').textContent;
+            
+            alert('💰 Đang chuyển đến trang thanh toán MoMo...\n\n📱 Mã đơn: ' + orderId + '\n💵 Số tiền: ' + amount);
+            
+            setTimeout(() => {
+                closePaymentModal();
+                alert('✅ Đặt hàng thành công!\n\n📧 Xác nhận gửi đến: ' + email);
+            }, 1500);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target == modal) closePaymentModal();
         }
 
         function addMessage(text, type) {
